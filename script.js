@@ -77,7 +77,7 @@ recognition.onresult = function(event){
 let speech = event.results[0][0].transcript.toLowerCase()
 
 console.log("You said:", speech)
-
+alert("you said:"+speech)
 // reset command
 if(speech.includes("reset")){
 resetTimer()
