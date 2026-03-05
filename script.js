@@ -80,44 +80,49 @@ recognition.start()
 recognition.onresult = function(event){
 
 let speech = event.results[0][0].transcript.toLowerCase().trim()
+const status = document.getElementById("voiceStatus")
+
 status.innerText = "Heard: " + speech
 
-// pause
-if(speech.includes("pause") || speech.includes("stop")){
+// pause or stop
+if(
+speech.includes("pause") ||
+speech.includes("paws") ||
+speech.includes("stop") ||
+speech.includes("hold")
+){
 pauseTimer()
 status.innerText += " → action: pause"
 return
 }
 
-// reset
-if(speech.includes("reset") || speech.includes("restart")){
+// reset or restart
+if(
+speech.includes("reset") ||
+speech.includes("restart") ||
+speech.includes("start over")
+){
 resetTimer()
 status.innerText += " → action: reset"
 return
 }
 
-// number → start timer
+// start timer with number
 let number = speech.match(/\d+/)
 
 if(number){
 let minutes = parseInt(number[0])
+
 secondsLeft = minutes * 60
 totalSeconds = secondsLeft
+
 updateDisplay()
 startTimer()
+
 status.innerText += " → action: start " + minutes + " min"
 return
 }
 
 status.innerText += " → action: none"
-}
-
-recognition.onerror = function(e){
-status.innerText = "Voice error: " + e.error
-}
-
-recognition.onend = function(){
-setTimeout(()=>{ status.innerText = "Voice: idle" },2000)
-}
 
 }
