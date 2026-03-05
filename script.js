@@ -63,60 +63,61 @@ updateDisplay()
 function voiceStart(){
 
 if(!('webkitSpeechRecognition' in window)){
-alert("Voice recognition not supported")
+alert("Voice recognition not supported in this browser")
 return
 }
 
 const recognition = new webkitSpeechRecognition()
-
 recognition.lang = "en-US"
 recognition.continuous = false
 recognition.interimResults = false
-recognition.maxAlternatives = 1
+
+const status = document.getElementById("voiceStatus")
+status.innerText = "Voice: listening..."
 
 recognition.start()
-
-recognition.onstart = function(){
-alert("Speak a command")
-}
 
 recognition.onresult = function(event){
 
 let speech = event.results[0][0].transcript.toLowerCase().trim()
+status.innerText = "Heard: " + speech
 
-console.log("You said:", speech)
-alert("You said: " + speech)
-
-// pause commands
-if(
-speech.includes("pause") ||
-speech.includes("stop")
-){
+// pause
+if(speech.includes("pause") || speech.includes("stop")){
 pauseTimer()
+status.innerText += " → action: pause"
 return
 }
 
-// reset commands
-if(
-speech.includes("reset") ||
-speech.includes("restart") ||
-speech.includes("start over")
-){
+// reset
+if(speech.includes("reset") || speech.includes("restart")){
 resetTimer()
+status.innerText += " → action: reset"
 return
 }
 
-// start timer with number
+// number → start timer
 let number = speech.match(/\d+/)
 
 if(number){
 let minutes = parseInt(number[0])
-
 secondsLeft = minutes * 60
 totalSeconds = secondsLeft
-
 updateDisplay()
 startTimer()
+status.innerText += " → action: start " + minutes + " min"
+return
+}
+
+status.innerText += " → action: none"
+}
+
+recognition.onerror = function(e){
+status.innerText = "Voice error: " + e.error
+}
+
+recognition.onend = function(){
+setTimeout(()=>{ status.innerText = "Voice: idle" },2000)
 }
 
 }
