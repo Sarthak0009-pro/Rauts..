@@ -60,3 +60,34 @@ audio.play()
 }
 
 updateDisplay()
+function voiceStart(){
+
+if(!('webkitSpeechRecognition' in window)){
+alert("Voice recognition not supported in this browser")
+return
+}
+
+const recognition = new webkitSpeechRecognition()
+
+recognition.lang = "en-US"
+recognition.start()
+
+recognition.onresult = function(event){
+
+let speech = event.results[0][0].transcript.toLowerCase()
+
+let number = speech.match(/\d+/)
+
+if(number){
+let minutes = parseInt(number[0])
+
+secondsLeft = minutes * 60
+totalSeconds = secondsLeft
+
+updateDisplay()
+startTimer()
+}
+
+}
+
+}
