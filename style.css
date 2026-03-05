@@ -83,4 +83,12 @@ height:12px;
 width:0%;
 background:#27ae60;
 transition:width 1s linear;
+.controls button{
+display:block;
+width:100%;
+margin-top:8px;
+}
+button:hover{
+transform:scale(1.05);
+transition:0.2s;
 }
