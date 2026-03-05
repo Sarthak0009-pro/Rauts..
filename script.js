@@ -72,18 +72,11 @@ const recognition = new webkitSpeechRecognition()
 recognition.lang = "en-US"
 recognition.start()
 
-recognition.onstart = function(){
-alert("Listening... say a number like 5 or 10")
-}
 recognition.onresult = function(event){
 
 let speech = event.results[0][0].transcript.toLowerCase()
 
-// pause command
-if(speech.includes("pause")){
-pauseTimer()
-return
-}
+console.log("You said:", speech)
 
 // reset command
 if(speech.includes("reset")){
@@ -91,7 +84,13 @@ resetTimer()
 return
 }
 
-// add minutes command
+// pause command
+if(speech.includes("pause")){
+pauseTimer()
+return
+}
+
+// add time command
 if(speech.includes("add")){
 let number = speech.match(/\d+/)
 if(number){
