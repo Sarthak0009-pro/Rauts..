@@ -75,7 +75,6 @@ recognition.start()
 recognition.onstart = function(){
 alert("Listening... say a number like 5 or 10")
 }
-
 recognition.onresult = function(event){
 
 let speech = event.results[0][0].transcript
@@ -89,8 +88,6 @@ totalSeconds = secondsLeft
 
 updateDisplay()
 startTimer()
-}
-
 }
 
 }
