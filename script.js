@@ -72,10 +72,13 @@ const recognition = new webkitSpeechRecognition()
 recognition.lang = "en-US"
 recognition.start()
 
+recognition.onstart = function(){
+alert("Listening... say a number like 5 or 10")
+}
+
 recognition.onresult = function(event){
 
-let speech = event.results[0][0].transcript.toLowerCase()
-
+let speech = event.results[0][0].transcript
 let number = speech.match(/\d+/)
 
 if(number){
