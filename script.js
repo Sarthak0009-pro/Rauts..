@@ -79,33 +79,65 @@ recognition.start()
 
 recognition.onresult = function(event){
 
-let speech = event.results[0][0].transcript.toLowerCase().trim()
+let speech = event.results[0][0].transcript.toLowerCase()
 const status = document.getElementById("voiceStatus")
 
 status.innerText = "Heard: " + speech
 
-// pause or stop
+
+// pause commands
 if(
 speech.includes("pause") ||
-speech.includes("paws") ||
 speech.includes("stop") ||
-speech.includes("hold")
+speech.includes("hold") ||
+speech.includes("wait") ||
+speech.includes("freeze")
 ){
 pauseTimer()
 status.innerText += " → action: pause"
 return
 }
 
-// reset or restart
+
+// reset commands
 if(
 speech.includes("reset") ||
 speech.includes("restart") ||
-speech.includes("start over")
+speech.includes("start over") ||
+speech.includes("clear") ||
+speech.includes("cancel")
 ){
 resetTimer()
 status.innerText += " → action: reset"
 return
 }
+
+
+// start or resume
+if(
+speech.includes("start") ||
+speech.includes("begin") ||
+speech.includes("resume") ||
+speech.includes("continue") ||
+speech.includes("go")
+){
+startTimer()
+status.innerText += " → action: start"
+return
+}
+
+
+// add time
+if(speech.includes("add")){
+let number = speech.match(/\d+/)
+if(number){
+secondsLeft += parseInt(number[0]) * 60
+updateDisplay()
+status.innerText += " → action: add time"
+}
+return
+}
+
 
 // start timer with number
 let number = speech.match(/\d+/)
@@ -120,9 +152,6 @@ updateDisplay()
 startTimer()
 
 status.innerText += " → action: start " + minutes + " min"
-return
 }
-
-status.innerText += " → action: none"
 
 }
