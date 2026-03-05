@@ -1,88 +1,192 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Countdown Timer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Online Countdown Timer</title>
 
 <style>
+
 body{
-font-family: Arial;
+font-family: system-ui, Arial;
+background: linear-gradient(135deg,#1e3c72,#2a5298);
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+margin:0;
+color:white;
+}
+
+.container{
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(10px);
+padding:30px;
+border-radius:16px;
+width:90%;
+max-width:420px;
 text-align:center;
-margin-top:120px;
-background:#f4f4f4;
+box-shadow:0 10px 25px rgba(0,0,0,0.25);
+}
+
+h1{
+margin-top:0;
+font-weight:600;
 }
 
 #time{
-font-size:60px;
-margin-bottom:25px;
+font-size:64px;
+margin:25px 0;
+font-weight:700;
+letter-spacing:2px;
+}
+
+input{
+width:120px;
+padding:10px;
+border-radius:6px;
+border:none;
+font-size:16px;
+text-align:center;
+}
+
+.controls{
+margin-top:20px;
 }
 
 button{
-font-size:18px;
 padding:12px 18px;
 margin:6px;
-border-radius:6px;
+font-size:15px;
+border:none;
+border-radius:8px;
 cursor:pointer;
+transition:0.2s;
 }
-</style>
 
+.start{
+background:#27ae60;
+color:white;
+}
+
+.pause{
+background:#f39c12;
+color:white;
+}
+
+.reset{
+background:#e74c3c;
+color:white;
+}
+
+button:hover{
+transform:scale(1.05);
+}
+
+.progress{
+width:100%;
+height:12px;
+background:rgba(255,255,255,0.2);
+border-radius:8px;
+margin-top:25px;
+overflow:hidden;
+}
+
+.bar{
+height:12px;
+width:0%;
+background:#27ae60;
+transition:width 1s linear;
+}
+
+</style>
 </head>
 
 <body>
 
+<div class="container">
+
 <h1>Countdown Timer</h1>
 
-<div id="time">05:00</div>
+<input id="minutes" type="number" placeholder="Minutes">
 
-<button onclick="startTimer()">Start</button>
-<button onclick="pauseTimer()">Pause</button>
-<button onclick="resetTimer()">Reset</button>
+<div id="time">00:00</div>
 
-<br><br>
+<div class="controls">
+<button class="start" onclick="startTimer()">Start</button>
+<button class="pause" onclick="pauseTimer()">Pause</button>
+<button class="reset" onclick="resetTimer()">Reset</button>
+</div>
 
-<button onclick="setTimer(300)">5 Min</button>
-<button onclick="setTimer(600)">10 Min</button>
-<button onclick="setTimer(900)">15 Min</button>
+<div class="progress">
+<div id="bar" class="bar"></div>
+</div>
+
+</div>
 
 <script>
 
-let seconds = 300
+let totalSeconds = 0
+let secondsLeft = 0
 let timer = null
 
+function startTimer(){
+
+let min = document.getElementById("minutes").value
+if(min <= 0 && secondsLeft === 0) return
+
+if(secondsLeft === 0){
+totalSeconds = min * 60
+secondsLeft = totalSeconds
+}
+
+clearInterval(timer)
+
+timer = setInterval(()=>{
+
+secondsLeft--
+
+updateDisplay()
+
+let percent = ((totalSeconds - secondsLeft)/totalSeconds)*100
+document.getElementById("bar").style.width = percent + "%"
+
+if(secondsLeft <= 0){
+clearInterval(timer)
+playSound()
+}
+
+},1000)
+
+}
+
+function pauseTimer(){
+clearInterval(timer)
+}
+
+function resetTimer(){
+
+clearInterval(timer)
+secondsLeft = 0
+document.getElementById("bar").style.width="0%"
+updateDisplay()
+
+}
+
 function updateDisplay(){
-let min = Math.floor(seconds/60)
-let sec = seconds % 60
+
+let min = Math.floor(secondsLeft/60)
+let sec = secondsLeft % 60
 
 min = min < 10 ? "0"+min : min
 sec = sec < 10 ? "0"+sec : sec
 
 document.getElementById("time").innerText = min + ":" + sec
+
 }
 
-function startTimer(){
-if(timer) return
-
-timer = setInterval(()=>{
-if(seconds > 0){
-seconds--
-updateDisplay()
-}
-},1000)
-}
-
-function pauseTimer(){
-clearInterval(timer)
-timer = null
-}
-
-function resetTimer(){
-pauseTimer()
-seconds = 300
-updateDisplay()
-}
-
-function setTimer(sec){
-seconds = sec
-updateDisplay()
+function playSound(){
+let audio = new Audio("https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg")
+audio.play()
 }
 
 updateDisplay()
