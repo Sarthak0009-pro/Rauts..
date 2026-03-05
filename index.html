@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Simple Timer</title>
+<style>
+body{
+font-family: Arial;
+text-align:center;
+margin-top:120px;
+background:#f4f4f4;
+}
+
+#time{
+font-size:60px;
+margin-bottom:30px;
+}
+
+button{
+font-size:18px;
+padding:10px 20px;
+margin:5px;
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Timer</h1>
+<div id="time">00:00</div>
+
+<button onclick="startTimer()">Start</button>
+<button onclick="pauseTimer()">Pause</button>
+<button onclick="resetTimer()">Reset</button>
+
+<script>
+let seconds = 0;
+let timer = null;
+
+function updateDisplay(){
+let min = Math.floor(seconds/60);
+let sec = seconds % 60;
+
+min = min < 10 ? "0"+min : min;
+sec = sec < 10 ? "0"+sec : sec;
+
+document.getElementById("time").innerText = min + ":" + sec;
+}
+
+function startTimer(){
+if(timer !== null) return;
+
+timer = setInterval(()=>{
+seconds++;
+updateDisplay();
+},1000);
+}
+
+function pauseTimer(){
+clearInterval(timer);
+timer = null;
+}
+
+function resetTimer(){
+pauseTimer();
+seconds = 0;
+updateDisplay();
+}
+</script>
+
+</body>
+</html>
