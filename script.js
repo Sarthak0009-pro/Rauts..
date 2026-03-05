@@ -82,32 +82,31 @@ alert("Speak a command")
 
 recognition.onresult = function(event){
 
-let speech = event.results[0][0].transcript.toLowerCase()
-console.log("Command:", speech)
+let speech = event.results[0][0].transcript.toLowerCase().trim()
 
-// pause command
-if(speech.includes("pause")){
+console.log("You said:", speech)
+alert("You said: " + speech)
+
+// pause commands
+if(
+speech.includes("pause") ||
+speech.includes("stop")
+){
 pauseTimer()
 return
 }
 
-// reset command
-if(speech.includes("reset") || speech.includes("restart")){
+// reset commands
+if(
+speech.includes("reset") ||
+speech.includes("restart") ||
+speech.includes("start over")
+){
 resetTimer()
 return
 }
 
-// add minutes
-if(speech.includes("add")){
-let number = speech.match(/\d+/)
-if(number){
-secondsLeft += parseInt(number[0]) * 60
-updateDisplay()
-}
-return
-}
-
-// start timer with minutes
+// start timer with number
 let number = speech.match(/\d+/)
 
 if(number){
@@ -118,16 +117,6 @@ totalSeconds = secondsLeft
 
 updateDisplay()
 startTimer()
-}
-
-}
-
-recognition.onerror = function(e){
-console.log("Voice error:", e.error)
-}
-
-recognition.onend = function(){
-console.log("Voice recognition stopped")
 }
 
 }
