@@ -77,7 +77,31 @@ alert("Listening... say a number like 5 or 10")
 }
 recognition.onresult = function(event){
 
-let speech = event.results[0][0].transcript
+let speech = event.results[0][0].transcript.toLowerCase()
+
+// pause command
+if(speech.includes("pause")){
+pauseTimer()
+return
+}
+
+// reset command
+if(speech.includes("reset")){
+resetTimer()
+return
+}
+
+// add minutes command
+if(speech.includes("add")){
+let number = speech.match(/\d+/)
+if(number){
+secondsLeft += parseInt(number[0]) * 60
+updateDisplay()
+}
+return
+}
+
+// start timer with number
 let number = speech.match(/\d+/)
 
 if(number){
