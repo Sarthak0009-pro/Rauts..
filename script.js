@@ -63,19 +63,27 @@ updateDisplay()
 function voiceStart(){
 
 if(!('webkitSpeechRecognition' in window)){
-alert("Voice recognition not supported in this browser")
+alert("Voice recognition not supported")
 return
 }
 
 const recognition = new webkitSpeechRecognition()
 
 recognition.lang = "en-US"
+recognition.continuous = false
+recognition.interimResults = false
+recognition.maxAlternatives = 1
+
 recognition.start()
+
+recognition.onstart = function(){
+alert("Speak a command")
+}
+
 recognition.onresult = function(event){
 
 let speech = event.results[0][0].transcript.toLowerCase()
-
-console.log("You said:", speech)
+console.log("Command:", speech)
 
 // pause command
 if(speech.includes("pause")){
@@ -84,12 +92,22 @@ return
 }
 
 // reset command
-if(speech.includes("reset")){
+if(speech.includes("reset") || speech.includes("restart")){
 resetTimer()
 return
 }
 
-// start timer with number
+// add minutes
+if(speech.includes("add")){
+let number = speech.match(/\d+/)
+if(number){
+secondsLeft += parseInt(number[0]) * 60
+updateDisplay()
+}
+return
+}
+
+// start timer with minutes
 let number = speech.match(/\d+/)
 
 if(number){
@@ -100,6 +118,16 @@ totalSeconds = secondsLeft
 
 updateDisplay()
 startTimer()
+}
+
+}
+
+recognition.onerror = function(e){
+console.log("Voice error:", e.error)
+}
+
+recognition.onend = function(){
+console.log("Voice recognition stopped")
 }
 
 }
